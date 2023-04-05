@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Logo, Search, UserMenu } from '@/components/navbar';
 import { Container } from '@/components';
