@@ -6,6 +6,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 
 import { api } from '@/utils/api';
 import ClientOnly from '@/components/ClientOnly';
+import { Modal } from '@/components/modals';
 
 const font = Nunito({
   subsets: ['latin'],
@@ -21,6 +22,7 @@ const Home: NextPage = () => {
       </Head>
       <main className={font.className}>
         <ClientOnly>
+          <Modal actionLabel="Submit" isOpen />
           <Navbar />
         </ClientOnly>
       </main>
