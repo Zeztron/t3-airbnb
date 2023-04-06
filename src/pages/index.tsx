@@ -7,6 +7,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { api } from '@/utils/api';
 import ClientOnly from '@/components/ClientOnly';
 import RegisterModal from '@/components/modals/RegisterModal';
+import { ToasterProvider } from '@/providers';
 
 const font = Nunito({
   subsets: ['latin'],
@@ -22,6 +23,7 @@ const Home: NextPage = () => {
       </Head>
       <main className={font.className}>
         <ClientOnly>
+          <ToasterProvider />
           <RegisterModal />
           <Navbar />
         </ClientOnly>
