@@ -5,9 +5,13 @@ import {
   type DefaultSession,
 } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import GithubProvider from 'next-auth/providers/github';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import bcrypt from 'bcrypt';
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
+import { TRPCError } from '@trpc/server';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -46,10 +50,55 @@ export const authOptions: NextAuthOptions = {
     },
   },
   adapter: PrismaAdapter(prisma),
+  pages: {
+    signIn: '/',
+  },
+  session: {
+    strategy: 'jwt'
+  },
+  secret: env.NEXTAUTH_SECRET,
+  debug: env.NODE_ENV === 'development',
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: { label: 'email', type: 'text' },
+        password: { label: 'password', type: 'password' },
+      },
+      authorize: async (credentials) => {
+        if (!credentials?.email || !credentials?.password)
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Invalid Credentials.',
+          });
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user || !user?.hashedPassword)
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Invalid Credentials.',
+          }); // user not found
+
+        const isValidPassword = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword
+        );
+
+        if (!isValidPassword)
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Invalid Password.',
+          }); // invalid password
+
+        return user;
+      },
     }),
     /**
      * ...add more providers here.
