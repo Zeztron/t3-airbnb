@@ -41,9 +41,9 @@ declare module 'next-auth' {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session({ session, user }) {
+    session({ session, token }) {
       if (session.user) {
-        session.user.id = user.id;
+        session.user.email = token.email;
         // session.user.role = user.role; <-- put other properties on the session here
       }
       return session;
@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
     signIn: '/',
   },
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
   },
   secret: env.NEXTAUTH_SECRET,
   debug: env.NODE_ENV === 'development',
