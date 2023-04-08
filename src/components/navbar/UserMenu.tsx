@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { MenuItem } from '@/components/navbar';
 import { useRegisterModal, useLoginModal } from '@/hooks';
@@ -8,12 +8,29 @@ import { Avatar } from '@/components';
 import { signOut, useSession } from 'next-auth/react';
 
 const UserMenu = () => {
+  const menuRef = useRef<HTMLDivElement>(null);
   const { data: currentUser } = useSession();
 
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    },
+    [setIsOpen]
+  );
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [handleClickOutside]);
 
   const toggleOpen = useCallback(() => {
     setIsOpen(!isOpen);
@@ -39,7 +56,10 @@ const UserMenu = () => {
         </div>
       </div>
       {isOpen && (
-        <div className='absolute right-0 top-12 w-[40vw] overflow-hidden rounded-xl bg-white text-sm shadow-md md:w-3/4'>
+        <div
+          ref={menuRef}
+          className='absolute right-0 top-12 w-[40vw] overflow-hidden rounded-xl bg-white text-sm shadow-md md:w-3/4'
+        >
           <div className='flex cursor-pointer flex-col'>
             {currentUser ? (
               <>
