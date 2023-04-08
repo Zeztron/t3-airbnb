@@ -2,7 +2,7 @@ import { type NextPage } from 'next';
 import { Nunito } from 'next/font/google';
 import Head from 'next/head';
 import { Navbar } from '@/components/navbar';
-import { LoginModal, RegisterModal } from '@/components/modals';
+import { LoginModal, RegisterModal, RentModal } from '@/components/modals';
 import ClientOnly from '@/components/ClientOnly';
 import { ToasterProvider } from '@/providers';
 
@@ -21,6 +21,7 @@ const Home: NextPage = () => {
       <main className={font.className}>
         <ClientOnly>
           <ToasterProvider />
+          <RentModal />
           <LoginModal />
           <RegisterModal />
           <Navbar />
