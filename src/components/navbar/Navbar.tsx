@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Logo, Search, UserMenu } from '@/components/navbar';
+import { Logo, Search, UserMenu, Categories } from '@/components/navbar';
 import { Container } from '@/components';
 
 const Navbar = () => {
@@ -16,6 +16,7 @@ const Navbar = () => {
           </div>
         </Container>
       </div>
+      <Categories />
     </div>
   );
 };
