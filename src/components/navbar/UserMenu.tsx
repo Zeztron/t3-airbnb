@@ -5,8 +5,11 @@ import { AiOutlineMenu } from 'react-icons/ai';
 import { MenuItem } from '@/components/navbar';
 import { useRegisterModal, useLoginModal } from '@/hooks';
 import { Avatar } from '@/components';
+import { signOut, useSession } from 'next-auth/react';
 
 const UserMenu = () => {
+  const { data: currentUser } = useSession();
+
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
@@ -31,17 +34,29 @@ const UserMenu = () => {
         >
           <AiOutlineMenu />
           <div className='hidden md:block'>
-            <Avatar />
+            <Avatar profilePicture={currentUser?.user.image} />
           </div>
         </div>
       </div>
       {isOpen && (
         <div className='absolute right-0 top-12 w-[40vw] overflow-hidden rounded-xl bg-white text-sm shadow-md md:w-3/4'>
           <div className='flex cursor-pointer flex-col'>
-            <>
-              <MenuItem onClick={loginModal.onOpen} label='Login' />
-              <MenuItem onClick={registerModal.onOpen} label='Sign up' />
-            </>
+            {currentUser ? (
+              <>
+                <MenuItem label='My Trips' onClick={() => {}} />
+                <MenuItem label='My Favorites' onClick={() => {}} />
+                <MenuItem label='My Reservations' onClick={() => {}} />
+                <MenuItem label='My Properties' onClick={() => {}} />
+                <MenuItem label='Airbnb my home' onClick={() => {}} />
+                <hr />
+                <MenuItem label='Logout' onClick={() => signOut()} />
+              </>
+            ) : (
+              <>
+                <MenuItem onClick={loginModal.onOpen} label='Login' />
+                <MenuItem onClick={registerModal.onOpen} label='Sign up' />
+              </>
+            )}
           </div>
         </div>
       )}

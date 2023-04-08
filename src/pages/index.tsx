@@ -1,7 +1,6 @@
 import { type NextPage } from 'next';
 import { Nunito } from 'next/font/google';
 import Head from 'next/head';
-import { useSession } from 'next-auth/react';
 import { Navbar } from '@/components/navbar';
 import { LoginModal, RegisterModal } from '@/components/modals';
 import ClientOnly from '@/components/ClientOnly';
@@ -12,8 +11,6 @@ const font = Nunito({
 });
 
 const Home: NextPage = () => {
-  const { data: currentUser } = useSession();
-
   return (
     <>
       <Head>
@@ -26,7 +23,7 @@ const Home: NextPage = () => {
           <ToasterProvider />
           <LoginModal />
           <RegisterModal />
-          <Navbar currentUser={currentUser}/>
+          <Navbar />
         </ClientOnly>
       </main>
     </>

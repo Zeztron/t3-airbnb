@@ -41,10 +41,12 @@ declare module 'next-auth' {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
     session({ session, token }) {
       if (session.user) {
-        session.user.email = token.email;
-        // session.user.role = user.role; <-- put other properties on the session here
+        session.user = { ...session.user, ...token };
       }
       return session;
     },
@@ -62,6 +64,10 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    GithubProvider({
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     CredentialsProvider({
       name: 'credentials',
