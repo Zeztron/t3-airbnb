@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { useRegisterModal } from '@/hooks';
+import { useLoginModal, useRegisterModal } from '@/hooks';
 import { Heading, Button } from '@/components';
 import { Input } from '@/components/inputs';
 import { Modal } from '@/components/modals';
@@ -15,6 +15,8 @@ import { IRegister } from '@/validation/auth';
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const { mutateAsync } = api.auth.register.useMutation({
@@ -36,6 +38,11 @@ const RegisterModal = () => {
     await mutateAsync(data as IRegister);
     setIsLoading(false);
   };
+
+  const toggle = useCallback(() => {
+    registerModal.onClose();
+    loginModal.onOpen();
+  }, [registerModal, loginModal]);
 
   const bodyContent = (
     <div className='flex flex-col gap-4'>
@@ -85,7 +92,7 @@ const RegisterModal = () => {
           <div>Already have an account?</div>
           <div
             className='cursor-pointer text-neutral-800 hover:underline'
-            onClick={registerModal.onClose}
+            onClick={toggle}
           >
             Log in
           </div>
