@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 import { listingSchema } from '@/validation/listing';
 
 export const listingsRouter = createTRPCRouter({
@@ -37,4 +37,17 @@ export const listingsRouter = createTRPCRouter({
         listing,
       };
     }),
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const listings = await ctx.prisma.listing.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return {
+      status: 200,
+      message: 'Listings fetched successfully',
+      listings,
+    };
+  }),
 });
