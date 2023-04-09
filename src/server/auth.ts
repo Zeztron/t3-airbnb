@@ -12,6 +12,7 @@ import bcrypt from 'bcrypt';
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
 import { TRPCError } from '@trpc/server';
+import { User } from '@prisma/client';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -21,11 +22,7 @@ import { TRPCError } from '@trpc/server';
  */
 declare module 'next-auth' {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession['user'];
+    user: User;
   }
 
   // interface User {
@@ -42,11 +39,14 @@ declare module 'next-auth' {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
-      return { ...token, ...user };
+      if (user) {
+        token.user = user;
+      }
+      return token;
     },
     session({ session, token }) {
-      if (session.user) {
-        session.user = { ...session.user, ...token };
+      if (session.user && token) {
+        session.user = token.user as User;
       }
       return session;
     },

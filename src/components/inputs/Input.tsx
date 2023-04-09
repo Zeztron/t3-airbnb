@@ -25,6 +25,8 @@ const Input: React.FC<InputProps> = ({
   register,
   errors,
 }) => {
+  const valueAsNumber = type === 'number';
+
   return (
     <div className='relative w-full'>
       {formatPrice && (
@@ -36,7 +38,7 @@ const Input: React.FC<InputProps> = ({
       <input
         id={id}
         disabled={disabled}
-        {...register(id, { required })}
+        {...register(id, { required, valueAsNumber })}
         placeholder=' '
         type={type}
         className={`peer w-full rounded-md border-2 bg-white p-4 pt-6 font-light outline-none transition disabled:cursor-not-allowed disabled:opacity-70 ${
