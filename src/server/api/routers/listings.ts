@@ -1,5 +1,6 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 import { listingSchema } from '@/validation/listing';
+import { z } from 'zod';
 
 export const listingsRouter = createTRPCRouter({
   create: protectedProcedure
@@ -50,4 +51,20 @@ export const listingsRouter = createTRPCRouter({
       listings,
     };
   }),
+  getById: publicProcedure
+    .input(z.object({ listingId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const listing = await ctx.prisma.listing.findUnique({
+        where: {
+          id: input.listingId,
+        },
+        include: { user: true },
+      });
+
+      if (!listing) return null;
+
+      return {
+        listing,
+      };
+    }),
 });

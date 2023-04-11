@@ -1,10 +1,7 @@
 import { type NextPage } from 'next';
 import { Nunito } from 'next/font/google';
 import Head from 'next/head';
-import { Navbar } from '@/components/navbar';
-import { LoginModal, RegisterModal, RentModal } from '@/components/modals';
-import { ToasterProvider } from '@/providers';
-import { Main, ClientOnly } from '@/components';
+import { ClientOnly, Main } from '@/components';
 
 const font = Nunito({
   subsets: ['latin'],
@@ -20,11 +17,6 @@ const Home: NextPage = () => {
       </Head>
       <main className={font.className}>
         <ClientOnly>
-          <ToasterProvider />
-          <RentModal />
-          <LoginModal />
-          <RegisterModal />
-          <Navbar />
           <Main />
         </ClientOnly>
       </main>

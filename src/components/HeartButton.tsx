@@ -10,8 +10,9 @@ import { User } from '@prisma/client';
 
 interface HeartButtonProps {
   listingId: string;
-  currentUser: User;
+  currentUser: User | null | undefined;
 }
+
 const HeartButton: React.FC<HeartButtonProps> = ({
   listingId,
   currentUser,
@@ -47,7 +48,6 @@ const HeartButton: React.FC<HeartButtonProps> = ({
 
       if (!currentUser) return loginModal.onOpen();
       if (hasFavorited) {
-        console.log(hasFavorited);
         await deleteFavorite({
           listingId,
           favoriteIds: currentUser.favoriteIds,
