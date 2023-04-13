@@ -12,3 +12,7 @@ export const getReservationsSchema = z.object({
   userId: z.string().optional(),
   authorId: z.string().optional(),
 });
+
+export const cancelReservationSchema = z.object({
+  reservationId: z.string(),
+});

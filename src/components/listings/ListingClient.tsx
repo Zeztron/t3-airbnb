@@ -78,8 +78,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
     });
 
     setIsLoading(false);
-
-    router.refresh();
+    router.push('/trips');
   }, [currentUser, loginModal, listing?.id, dateRange, totalPrice, router]);
 
   useEffect(() => {

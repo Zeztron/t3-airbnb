@@ -2,6 +2,7 @@ import { createTRPCRouter, protectedProcedure } from '../trpc';
 import {
   reservationSchema,
   getReservationsSchema,
+  cancelReservationSchema,
 } from '@/validation/reservation';
 
 export const reservationsRouter = createTRPCRouter({
@@ -64,6 +65,23 @@ export const reservationsRouter = createTRPCRouter({
         status: 200,
         message: 'Reservations fetched successfully',
         reservations,
+      };
+    }),
+  cancelReservation: protectedProcedure
+    .input(cancelReservationSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { reservationId } = input;
+
+      const reservation = await ctx.prisma.reservation.delete({
+        where: {
+          id: reservationId,
+        },
+      });
+
+      return {
+        status: 200,
+        message: 'Reservation cancelled successfully',
+        reservation,
       };
     }),
 });
