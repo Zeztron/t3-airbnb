@@ -72,9 +72,13 @@ export const reservationsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { reservationId } = input;
 
-      const reservation = await ctx.prisma.reservation.delete({
+      const reservation = await ctx.prisma.reservation.deleteMany({
         where: {
           id: reservationId,
+          OR: [
+            { userId: ctx.session.user.id },
+            { listing: { userId: ctx.session.user.id } },
+          ],
         },
       });
 
