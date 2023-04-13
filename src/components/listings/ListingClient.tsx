@@ -2,11 +2,18 @@
 
 import { Listing, Reservation, User } from '@prisma/client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Range } from 'react-date-range';
 import { differenceInCalendarDays, eachDayOfInterval } from 'date-fns';
 import { categories, Container } from '@/components';
-import { ListingHead, ListingInfo, ListingReservation } from '@/components/listings';
+import {
+  ListingHead,
+  ListingInfo,
+  ListingReservation,
+} from '@/components/listings';
 import { useLoginModal } from '@/hooks';
 import { useRouter } from 'next/navigation';
+import { api } from '@/utils/api';
+import { toast } from 'react-hot-toast';
 
 const initialDateRange = {
   startDate: new Date(),
@@ -30,6 +37,15 @@ const ListingClient: React.FC<ListingClientProps> = ({
   const loginModal = useLoginModal();
   const router = useRouter();
 
+  const { mutateAsync } = api.reservations.reserve.useMutation({
+    onSuccess: () => {
+      toast.success('Reservation created successfully');
+    },
+    onError: () => {
+      toast.error('Error creating reservation');
+    },
+  });
+
   const disabledDates = useMemo(() => {
     let dates: Date[] = [];
 
@@ -47,23 +63,24 @@ const ListingClient: React.FC<ListingClientProps> = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
-  const [dateRange, setDateRange] = useState(initialDateRange);
+  const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
-  const onCreateReservation = useCallback(() => {
+  const onCreateReservation = useCallback(async () => {
     if (!currentUser) return loginModal.onOpen();
 
     setIsLoading(true);
 
-    /*axios.post('/api/reservations', {
-      totalPrice.
-      startDate: dateRange.startDate,
-      endDate: dateRange.endDate,
+    await mutateAsync({
       listingId: listing.id,
-    }).then(() => toast.success()).catch(() => toast.error)*/
-    //setDateRange(initialDateRange)
-    // redirect to /traps
+      startDate: dateRange.startDate!,
+      endDate: dateRange.endDate!,
+      totalPrice,
+    });
+
+    setIsLoading(false);
+
     router.refresh();
-  }, []);
+  }, [currentUser, loginModal, listing?.id, dateRange, totalPrice, router]);
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
@@ -110,7 +127,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
                 <ListingReservation
                   price={listing.price}
                   totalPrice={totalPrice}
-                  onChangeDate={(value: any) => setDateRange(value)}
+                  onChangeDate={(value: Range) => setDateRange(value)}
                   dateRange={dateRange}
                   onSubmit={onCreateReservation}
                   disabled={isLoading}

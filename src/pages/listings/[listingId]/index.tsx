@@ -14,6 +14,10 @@ const ListingPage = () => {
     listingId: listingId as string,
   });
 
+  const { data: reservations } = api.reservations.getReservations.useQuery(
+    router.query
+  );
+
   const { data: currentUser } = api.user.getCurrentUser.useQuery();
 
   if (!data) {
@@ -26,7 +30,11 @@ const ListingPage = () => {
 
   return (
     <ClientOnly>
-      <ListingClient listing={data.listing} currentUser={currentUser} />
+      <ListingClient
+        listing={data.listing}
+        currentUser={currentUser}
+        reservations={reservations?.reservations}
+      />
     </ClientOnly>
   );
 };

@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 import { z } from 'zod';
 
 export const favoritesRouter = createTRPCRouter({
@@ -10,8 +10,6 @@ export const favoritesRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      console.log(input.favoriteIds);
-
       const newFavoriteIds = [...input.favoriteIds, input.listingId];
 
       const user = await ctx.prisma.user.update({
@@ -22,8 +20,6 @@ export const favoritesRouter = createTRPCRouter({
           favoriteIds: newFavoriteIds,
         },
       });
-
-      console.log('favorite', user);
 
       return {
         status: 200,
