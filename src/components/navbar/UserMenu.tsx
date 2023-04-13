@@ -75,9 +75,15 @@ const UserMenu = () => {
           <div className='flex cursor-pointer flex-col'>
             {currentUser ? (
               <>
-                <MenuItem label='My Trips' onClick={() => router.push('/trips')} />
+                <MenuItem
+                  label='My Trips'
+                  onClick={() => router.push('/trips')}
+                />
                 <MenuItem label='My Favorites' onClick={() => {}} />
-                <MenuItem label='My Reservations' onClick={() => {}} />
+                <MenuItem
+                  label='My Reservations'
+                  onClick={() => router.push('/reservations')}
+                />
                 <MenuItem label='My Properties' onClick={() => {}} />
                 <MenuItem label='Airbnb my home' onClick={rentModal.onOpen} />
                 <hr />

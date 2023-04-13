@@ -13,8 +13,8 @@ const Trips = () => {
     return (
       <ClientOnly>
         <EmptyState
-          title='No tips found'
-          subtitle='Looks like you havent reserved any trips.'
+          title='No Trips found'
+          subtitle='Looks like you havent booked any trips.'
         />
       </ClientOnly>
     );
