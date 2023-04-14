@@ -3,7 +3,12 @@ import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 
 import { Navbar } from '@/components/navbar';
-import { LoginModal, RegisterModal, RentModal } from '@/components/modals';
+import {
+  LoginModal,
+  RegisterModal,
+  RentModal,
+  SearchModal,
+} from '@/components/modals';
 import { ToasterProvider } from '@/providers';
 import { ClientOnly } from '@/components';
 import { api } from '@/utils/api';
@@ -21,6 +26,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <RentModal />
         <LoginModal />
         <RegisterModal />
+        <SearchModal />
         <Navbar />
       </ClientOnly>
       <Component {...pageProps} />

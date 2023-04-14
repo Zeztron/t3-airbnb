@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
-import { listingSchema } from '@/validation/listing';
+import { listingSchema, getListingSchema } from '@/validation/listing';
 import { z } from 'zod';
 
 export const listingsRouter = createTRPCRouter({
@@ -74,13 +74,61 @@ export const listingsRouter = createTRPCRouter({
       };
     }),
   getAll: publicProcedure
-    .input(z.object({ userId: z.string().optional() }))
+    .input(getListingSchema)
     .query(async ({ ctx, input }) => {
       let query: any = {};
 
-      if (input.userId) {
+      if (input?.userId) {
         query.userId = input.userId;
       }
+
+      if (input?.category) {
+        query.category = input.category;
+      }
+
+      if (input?.roomCount) {
+        query.roomCount = {
+          gte: +input.roomCount,
+        };
+      }
+
+      if (input?.guestCount) {
+        query.guestCount = {
+          gte: +input.guestCount,
+        };
+      }
+
+      if (input?.bathroomCount) {
+        query.bathroomCount = {
+          gte: +input.bathroomCount,
+        };
+      }
+
+      if (input?.locationValue) {
+        query.locationValue = input.locationValue;
+      }
+
+      if (input?.startDate && input?.endDate) {
+        query.NOT = {
+          reservations: {
+            some: {
+              OR: [
+                {
+                  endDate: { gte: input.startDate },
+                  startDate: { lte: input.startDate },
+                },
+                {
+                  startDate: { lte: input.endDate },
+                  endDate: { gte: input.endDate },
+                },
+              ],
+            },
+          },
+        };
+      }
+
+      console.log('query', query);
+
       const listings = await ctx.prisma.listing.findMany({
         where: query,
         orderBy: {

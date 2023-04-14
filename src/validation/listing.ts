@@ -20,4 +20,16 @@ export const listingSchema = z.object({
     .min(1, { message: 'Must include at least 1 bathroom' }),
 });
 
+export const getListingSchema = z
+  .object({
+    userId: z.string().optional(),
+    guestCount: z.string().optional(),
+    roomCount: z.string().optional(),
+    bathroomCount: z.string().optional(),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+    locationValue: z.string().optional(),
+    category: z.string().optional(),
+  })
+
 export type IListing = z.infer<typeof listingSchema>;

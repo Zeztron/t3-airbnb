@@ -1,10 +1,12 @@
+import { useRouter } from 'next/router';
 import { ClientOnly, EmptyState, Container } from '@/components';
 import { ListingCard } from '@/components/listings';
 import { api } from '@/utils/api';
 import { Listing } from '@prisma/client';
 
 const Main = () => {
-  const { data } = api.listing.getAll.useQuery({});
+  const router = useRouter();
+  const { data } = api.listing.getAll.useQuery(router.query);
   const { data: user } = api.user.getCurrentUser.useQuery();
 
   if (data?.listings.length === 0) {
