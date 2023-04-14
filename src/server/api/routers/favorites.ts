@@ -55,4 +55,26 @@ export const favoritesRouter = createTRPCRouter({
         user,
       };
     }),
+
+  getFavorites: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+    });
+
+    const favorites = await ctx.prisma.listing.findMany({
+      where: {
+        id: {
+          in: [...(user?.favoriteIds || [])],
+        },
+      },
+    });
+
+    return {
+      status: 200,
+      message: 'Favorites retrieved',
+      favorites,
+    };
+  }),
 });
