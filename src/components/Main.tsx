@@ -2,10 +2,9 @@ import { ClientOnly, EmptyState, Container } from '@/components';
 import { ListingCard } from '@/components/listings';
 import { api } from '@/utils/api';
 import { Listing } from '@prisma/client';
-import { useSession } from 'next-auth/react';
 
 const Main = () => {
-  const { data, isLoading } = api.listing.getAll.useQuery();
+  const { data } = api.listing.getAll.useQuery({});
   const { data: user } = api.user.getCurrentUser.useQuery();
 
   if (data?.listings.length === 0) {
